@@ -7,13 +7,16 @@ contract Auction {
     address public owner;
     uint256 public creationTime;
 
+    // variables default to internal
+    // state variables defualt to private
+
     constructor() {
         owner = msg.sender;
         creationTime = block.timestamp;
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "You are not the owner");
         _;
     }
 
