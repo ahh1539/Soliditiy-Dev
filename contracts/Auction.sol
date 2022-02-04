@@ -24,16 +24,33 @@ contract Auction {
     // when no other function matches
     fallback() external payable {}
 
-    function bid() public payable returns (uint256) {
+    function bid() public payable returns (bool) {
         if (msg.value > bids[msg.sender]) {
+            // returns the original bid amount
+            uint256 oldBid = bids[msg.sender];
+            refundBalance(payable(msg.sender), oldBid);
+
             bids[msg.sender] = msg.value;
-            return 1;
+            return true;
         }
-        payable(msg.sender).transfer(msg.value);
-        return 0;
+        refundBalance(payable(msg.sender), msg.value);
+        // payable(msg.sender).transfer(msg.value);
+        return false;
     }
 
-    function getContractBalance() public view onlyOwner returns (uint256) {
+    // refunds the balance of the sender
+    function refundBalance(address payable sendAddress, uint256 amount)
+        private
+        returns (bool)
+    {
+        if (amount <= address(this).balance) {
+            sendAddress.transfer(amount);
+            return true;
+        }
+        return false;
+    }
+
+    function getContractBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
