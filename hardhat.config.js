@@ -4,9 +4,7 @@ module.exports = {
     hardhat: {},
     rinkeby: {
       url: "https://eth-rinkeby.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
-      accounts: [
-        "3d2c37de5eddac0a135f617f7485c64f58fe0b8e3f7a723e59477613522b5c11",
-      ],
+      accounts: [],
     },
   },
   solidity: {
