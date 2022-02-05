@@ -3,73 +3,134 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 contract Auction {
-    mapping(address => uint256) public bids;
-    address public owner;
-    uint256 public creationTime;
+    address payable public owner;
+    uint256 public startBlock;
+    uint256 public endBlock;
+    string public ipfsHash;
+    bool public ownerTakenFunds;
 
-    // variables default to internal
-    // state variables defualt to private
+    enum State {
+        Started,
+        Running,
+        Ended,
+        Canceled
+    }
+    State public auctionState;
+
+    uint256 public highestBindingBid;
+    address payable public highestBidder;
+
+    mapping(address => uint256) public bids;
+
+    uint256 bidIncrement;
 
     constructor() {
-        owner = msg.sender;
-        creationTime = block.timestamp;
+        owner = payable(msg.sender);
+        auctionState = State.Running;
+        startBlock = block.number;
+        endBlock = startBlock + 3;
+        ipfsHash = "";
+        bidIncrement = 100;
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "You are not the owner");
+    modifier notOwner() {
+        require(msg.sender != owner);
         _;
     }
 
-    // declaring the receive() function that is executed when sending ETH to the contract address
-    receive() external payable {}
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
 
-    // declaring a fallback payable function that is called when msg.data is not empty or
-    // when no other function matches
-    fallback() external payable {}
+    modifier afterStart() {
+        require(block.number >= startBlock);
+        _;
+    }
 
-    function bid() public payable returns (bool) {
-        if (msg.value > bids[msg.sender]) {
-            // returns the original bid amount
-            uint256 oldBid = bids[msg.sender];
-            refundBalance(payable(msg.sender), oldBid);
+    modifier beforeEnd() {
+        require(block.number <= endBlock);
+        _;
+    }
 
-            bids[msg.sender] = msg.value;
-            return true;
+    function placeBid() public payable notOwner afterStart beforeEnd {
+        require(auctionState == State.Running, "Auction is not active");
+        require(msg.value >= bidIncrement, "Minimum bid increment not met");
+
+        uint256 currentBid = bids[msg.sender] + msg.value;
+
+        require(
+            currentBid > highestBindingBid,
+            "Bid amount is not great enough"
+        );
+        bids[msg.sender] = currentBid;
+
+        if (currentBid <= bids[highestBidder]) {
+            /*
+            someone bid higher but it is still lower that what the highest bidder is willing to pay
+            therefore the highest binding bid is increased by 100 or by the highest bidders max bid amount if
+            that is lower than the current bid + 100, the current highest bidder maintains the binding bid
+            */
+            highestBindingBid = min(
+                currentBid + bidIncrement,
+                bids[highestBidder]
+            );
+        } else {
+            // increases the binding bid by 100 and a new highest bidder is established
+            highestBindingBid = min(
+                currentBid,
+                bids[highestBidder] + bidIncrement
+            );
+            highestBidder = payable(msg.sender);
         }
-        refundBalance(payable(msg.sender), msg.value);
-        // payable(msg.sender).transfer(msg.value);
-        return false;
     }
 
-    // refunds the balance of the sender
-    function refundBalance(address payable sendAddress, uint256 amount)
-        private
-        returns (bool)
-    {
-        if (amount <= address(this).balance) {
-            sendAddress.transfer(amount);
-            return true;
+    function cancelAuction() public onlyOwner {
+        auctionState = State.Canceled;
+    }
+
+    function finalizeAuction() public {
+        require(
+            auctionState == State.Canceled || block.number > endBlock,
+            "Auction not in finished state"
+        );
+        require(msg.sender == owner || bids[msg.sender] > 0);
+        address payable recipient = payable(msg.sender);
+        uint256 value;
+
+        if (auctionState == State.Canceled) {
+            // Auction was cancelled
+            recipient = payable(msg.sender);
+            value = bids[msg.sender];
+        } else {
+            //Auction ended successfully
+            if (msg.sender == owner) {
+                // Owner getting funds
+                recipient = owner;
+                value = highestBindingBid;
+            } else if (msg.sender == highestBidder) {
+                // highest bidder getting leftover funds
+                recipient = highestBidder;
+                value = bids[highestBidder] - highestBindingBid;
+            } else {
+                // non highest bidder retrieving funds
+                recipient = payable(msg.sender);
+                value = bids[msg.sender];
+            }
         }
-        return false;
-    }
-
-    function getContractBalance() public view returns (uint256) {
-        return address(this).balance;
-    }
-
-    function howMuchGasUsed() public view returns (uint256) {
-        uint256 startGas = gasleft();
-        uint256 i = 1;
-        for (uint256 j = 1; j < 15; j++) {
-            i++;
+        if (recipient == owner && ownerTakenFunds != true) {
+            recipient.transfer(value);
+            ownerTakenFunds = true; // variable so owner cannot take more than once
+        } else if (recipient != owner) {
+            bids[recipient] = 0; // reset so bidder can't call more that once
+            recipient.transfer(value);
         }
-        uint256 endGas = gasleft();
-        return startGas - endGas;
     }
 
-    /*
-    msg.sender -> account address that creates and sends the transaction
-    msg.value -> ETH value (represented in wei) sent to this contract
-    msg.data -> data field in the transaction or call that called the function
-    */
+    function min(uint256 a, uint256 b) private pure returns (uint256) {
+        if (a > b) {
+            return b;
+        }
+        return a;
+    }
 }
