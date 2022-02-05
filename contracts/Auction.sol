@@ -24,13 +24,18 @@ contract Auction {
 
     uint256 bidIncrement;
 
-    constructor() {
-        owner = payable(msg.sender);
+    constructor(
+        address _owner,
+        uint256 _endBlock,
+        string memory _ipfsHash,
+        uint256 _bidIncrement
+    ) {
+        owner = payable(_owner);
         auctionState = State.Running;
         startBlock = block.number;
-        endBlock = startBlock + 3;
-        ipfsHash = "";
-        bidIncrement = 100;
+        endBlock = startBlock + _endBlock;
+        ipfsHash = _ipfsHash;
+        bidIncrement = _bidIncrement;
     }
 
     modifier notOwner() {
@@ -132,5 +137,28 @@ contract Auction {
             return b;
         }
         return a;
+    }
+}
+
+contract CreateAuction {
+    Auction[] public auctions;
+    address public owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function createNewAuction(
+        uint256 endBlock,
+        string memory ipfsHash,
+        uint256 bidIncrement
+    ) public {
+        Auction newAuction = new Auction(
+            msg.sender,
+            endBlock,
+            ipfsHash,
+            bidIncrement
+        );
+        auctions.push(newAuction);
     }
 }
