@@ -24,6 +24,10 @@ contract CrowdFunding {
     mapping(uint256 => Request) public requests;
     uint256 public numRequests;
 
+    event DonateEvent(address _sender, uint256 _amount);
+    event CreateRequestEvent(string _description, uint256 _amount, address _recipient);
+    event MakeRequestPaymentEvent(uint256 _requestNumber, address _recipient, uint256 _amount);
+
     constructor(uint256 _goal, uint256 _endTime) {
         owner = msg.sender;
         goal = _goal;
@@ -49,6 +53,7 @@ contract CrowdFunding {
         }
         donors[msg.sender] += msg.value;
         amountRaised += msg.value;
+        emit DonateEvent(msg.sender, msg.value);
     }
 
     function refund() public {
@@ -72,6 +77,7 @@ contract CrowdFunding {
         newRequest.recipient = payable(_recipient);
         newRequest.numVoters = 0;
         newRequest.completed = false;
+        emit CreateRequestEvent(_description, _amount, _recipient);
     }
 
     function voteForRequest(uint256 _requestNumber) public {
@@ -87,7 +93,7 @@ contract CrowdFunding {
         tempRequest.numVoters++;
     }
 
-    function makePayment(uint256 _requestNumber) public onlyOwner {
+    function makeRequestPayment(uint256 _requestNumber) public onlyOwner {
         require(amountRaised >= goal, "Campaign goal not met");
         Request storage tempRequest = requests[_requestNumber];
         require(
@@ -102,8 +108,10 @@ contract CrowdFunding {
             // defaults to send remaining amount in contract if > than available amount
             uint256 amount = address(this).balance;
             tempRequest.recipient.transfer(amount);
+            emit MakeRequestPaymentEvent(_requestNumber, tempRequest.recipient, amount);
         } else {
             tempRequest.recipient.transfer(tempRequest.amount);
+            emit MakeRequestPaymentEvent(_requestNumber, tempRequest.recipient, tempRequest.amount);
         }
         tempRequest.completed = true;
     }
