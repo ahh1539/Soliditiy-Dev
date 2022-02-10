@@ -8,9 +8,9 @@ import "../UtilityContracts/SafeMath.sol";
 contract Barbs is IERC20 {
     using SafeMath for uint256;
 
-    string public name = "Barbs Coin";
-    string public symbol = "BARBS";
-    uint256 public decimals = 18;
+    string public constant name = "Barbs Coin";
+    string public constant symbol = "BARBS";
+    uint256 public constant decimals = 18;
     uint256 public override totalSupply;
 
     address public founder;
@@ -19,7 +19,7 @@ contract Barbs is IERC20 {
     mapping(address => mapping(address => uint256)) public allowed;
 
     constructor() {
-        totalSupply = 1000000;
+        totalSupply = 300000000000000000000000; // 300,000
         founder = msg.sender;
         balances[founder] = totalSupply;
     }
@@ -62,6 +62,5 @@ contract Barbs is IERC20 {
         
         return true;
     }
-
 
 }
