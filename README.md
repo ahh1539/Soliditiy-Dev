@@ -1,4 +1,11 @@
 # Soliditiy-Dev
 
 Deploy using Remix or Hardhat
-https://remix.ethereum.org/
+
+Remix: https://remix.ethereum.org/
+
+ERC20 Docs: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
+
+Rinkeby (ETH testnet) Explorer: https://rinkeby.etherscan.io/
+
+Mumbai (Polygon testnet) Explorer: https://mumbai.polygonscan.com/
