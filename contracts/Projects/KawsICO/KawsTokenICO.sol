@@ -2,15 +2,15 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
-import "../UtilityContracts/IERC20.sol";
-import "../UtilityContracts/SafeMath.sol";
-import "./BarbCoin.sol";
+import "../../UtilityContracts/IERC20.sol";
+import "../../UtilityContracts/SafeMath.sol";
+import "./KawsCoin.sol";
 
-contract BarbsICO is Barbs {
+contract KawsICO is Kaws {
     using SafeMath for uint256;
 
     address payable public deposit;
-    uint256 public barbEthMultiplier = 1000; // 1ETH = 1000 BARBS
+    uint256 public barbEthMultiplier = 1000; // 1ETH = 1000 KAWS
   
     uint256 public hardCap = 300 ether;
     uint256 public raisedAmount;
