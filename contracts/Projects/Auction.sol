@@ -10,6 +10,8 @@ contract Auction {
     bool public ownerTakenFunds;
 
     enum State {
+
+        
         Started,
         Running,
         Ended,
