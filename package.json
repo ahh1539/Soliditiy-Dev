@@ -5,6 +5,15 @@
     "@nomiclabs/hardhat-waffle": "^2.0.2",
     "chai": "^4.3.6",
     "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.5.4"
+    "ethers": "^5.5.4",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.3",
+    "prettier": "2.5.1"
+  },
+  "lint-staged": {
+    "*.{js,css,md,sol}": "prettier --write"
+  },
+  "scripts": {
+    "prepare": "husky install"
   }
 }
