@@ -31,6 +31,7 @@ describe("Barbs Coin contract", function () {
       "299500000000000000000000"
     ); // 299,500 BARBS
 
+    // addr1 transfer 100 BARBS - addr2
     await barbsCoin
       .connect(addr1)
       .transfer(addr2.address, "100000000000000000000"); // 100 BARBS
