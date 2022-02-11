@@ -2,44 +2,66 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("Barbs Coin contract", function () {
-  it("Deployment should assign the total supply of tokens to the owner", async function () {
-    const [owner] = await ethers.getSigners();
+  let Token;
+  let hardhatToken;
+  let owner;
+  let addr1;
+  let addr2;
+  let addrs;
 
-    const Barbs = await ethers.getContractFactory("Barbs");
+  beforeEach(async function () {
+    // Get the ContractFactory and Signers here.
+    Token = await ethers.getContractFactory("Barbs");
+    [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
-    const barbsCoin = await Barbs.deploy();
-
-    const ownerBalance = await barbsCoin.balanceOf(owner.address);
-    expect(await barbsCoin.name()).to.equal("Barbs Coin");
-    expect(await barbsCoin.symbol()).to.equal("BARBS");
-    expect(await barbsCoin.totalSupply()).to.equal(ownerBalance);
+    // To deploy our contract, we just have to call Barbs.deploy() and await
+    // for it to be deployed(), which happens once its transaction has been
+    // mined.
+    barbsCoin = await Token.deploy();
   });
 
-  it("Transfer tokens from owner to another address after creation", async function () {
-    const [owner, addr1, addr2] = await ethers.getSigners();
+  describe("Deployment", function () {
+    it("Deployment should assign the total supply of tokens to the owner", async function () {
+      const ownerBalance = await barbsCoin.balanceOf(owner.address);
+      expect(await barbsCoin.name()).to.equal("Barbs Coin");
+      expect(await barbsCoin.symbol()).to.equal("BARBS");
+      expect(await barbsCoin.decimals()).to.equal(18);
+      expect(await barbsCoin.totalSupply()).to.equal(ownerBalance);
+    });
+  });
 
-    const Barbs = await ethers.getContractFactory("Barbs");
+  describe("Transfers", function () {
+    it("Transfer tokens from owner to another address after creation", async function () {
+      // owner transfer 500 BARBS -> addr1
+      await barbsCoin.transfer(addr1.address, "500000000000000000000"); // 500 BARBS
+      expect(await barbsCoin.balanceOf(addr1.address)).to.equal(
+        "500000000000000000000"
+      );
+      expect(await barbsCoin.balanceOf(owner.address)).to.equal(
+        "299500000000000000000000"
+      ); // 299,500 BARBS
 
-    const barbsCoin = await Barbs.deploy();
+      // addr1 transfer 100 BARBS - addr2
+      await barbsCoin
+        .connect(addr1)
+        .transfer(addr2.address, "100000000000000000000"); // 100 BARBS
+      expect(await barbsCoin.balanceOf(addr2.address)).to.equal(
+        "100000000000000000000"
+      );
+      expect(await barbsCoin.balanceOf(addr1.address)).to.equal(
+        "400000000000000000000"
+      ); // 400 BARBS
+    });
 
-    // owner transfer 500 BARBS -> addr1
-    await barbsCoin.transfer(addr1.address, "500000000000000000000"); // 500 BARBS
-    expect(await barbsCoin.balanceOf(addr1.address)).to.equal(
-      "500000000000000000000"
-    );
-    expect(await barbsCoin.balanceOf(owner.address)).to.equal(
-      "299500000000000000000000"
-    ); // 299,500 BARBS
+    it("Transfer fails if sender has no tokens", async function () {
+      // addr1 trys to send 1 BARBS but has no balance
+      await expect(
+        barbsCoin.connect(addr1).transfer(owner.address, "1000000000000000000")
+      ).to.be.revertedWith("Insufficient Balance");
 
-    // addr1 transfer 100 BARBS - addr2
-    await barbsCoin
-      .connect(addr1)
-      .transfer(addr2.address, "100000000000000000000"); // 100 BARBS
-    expect(await barbsCoin.balanceOf(addr2.address)).to.equal(
-      "100000000000000000000"
-    );
-    expect(await barbsCoin.balanceOf(addr1.address)).to.equal(
-      "400000000000000000000"
-    ); // 400 BARBS
+      const ownerBalance = await barbsCoin.balanceOf(owner.address);
+
+      expect(ownerBalance).to.equal(await barbsCoin.totalSupply());
+    });
   });
 });
