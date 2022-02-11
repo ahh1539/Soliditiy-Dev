@@ -11,6 +11,6 @@ describe("Barbs Coin contract", function () {
     const barbsCoin = await Barbs.deploy();
 
     const ownerBalance = await barbsCoin.balanceOf(owner.address);
-    expect(await barbsCoin.totalSupply()).to.equal(329);
+    expect(await barbsCoin.totalSupply()).to.equal(ownerBalance);
   });
 });
