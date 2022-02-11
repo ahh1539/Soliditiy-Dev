@@ -22,6 +22,7 @@ contract testArray {
         if (index < numbers.length) {
             return numbers[index];
         }
+
         return 0;
     }
 }
