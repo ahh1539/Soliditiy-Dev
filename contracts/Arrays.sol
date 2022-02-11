@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
-contract testArray {
+contract TestArray {
     uint256[] public numbers;
     bytes public word = "hello world";
 
