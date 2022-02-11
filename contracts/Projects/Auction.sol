@@ -42,7 +42,6 @@ contract Auction {
 
     modifier notOwner() {
         require(msg.sender != owner);
-
         _;
     }
 

@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "prepare": "husky install",
+    "test": "npx hardhat test"
+  },
   "name": "hardhat-project",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
@@ -13,8 +17,5 @@
   },
   "lint-staged": {
     "*.{js,css,md,sol}": "prettier --write"
-  },
-  "scripts": {
-    "prepare": "husky install"
   }
 }

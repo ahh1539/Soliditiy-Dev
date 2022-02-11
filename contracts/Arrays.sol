@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
-contract TestArray {
+contract testArray {
     uint256[] public numbers;
     bytes public word = "hello world";
 
@@ -22,7 +22,6 @@ contract TestArray {
         if (index < numbers.length) {
             return numbers[index];
         }
-
         return 0;
     }
 }
