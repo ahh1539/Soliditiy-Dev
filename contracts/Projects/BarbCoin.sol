@@ -4,7 +4,9 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "../UtilityContracts/IERC20.sol";
 import "../UtilityContracts/SafeMath.sol";
-import "hardhat/console.sol";
+
+// import "hardhat/console.sol";
+// console.log("Trying to send %s tokens to %s", value, to);
 
 contract Barbs is IERC20 {
     using SafeMath for uint256;
@@ -30,9 +32,6 @@ contract Barbs is IERC20 {
     }
 
     function transfer(address to, uint256 value) public override returns (bool) {
-        console.log("Sender balance is %s tokens", balances[msg.sender]);
-        console.log("Trying to send %s tokens to %s", value, to);
-
         require(balances[msg.sender] >= value, "Insufficient Balance");
 
         balances[to] = balances[to].add(value);

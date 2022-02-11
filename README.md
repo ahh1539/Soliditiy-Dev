@@ -17,3 +17,7 @@ Mumbai (Polygon testnet) Explorer: https://mumbai.polygonscan.com/
 run hardhat tests: `npx hardhat test`
 
 compiling the contracts: `npx hardhat compile`
+
+deploying on local hardhat network: `npx hardhat run scripts/deployBarbsCoin.js`
+
+deploying on rinkeby network: `npx hardhat run scripts/deployBarbsCoin.js --network rinkeby`
