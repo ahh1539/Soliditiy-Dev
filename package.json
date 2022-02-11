@@ -12,7 +12,7 @@
     "prettier-plugin-solidity": "^1.0.0-beta.19"
   },
   "lint-staged": {
-    "*.{js,css,md,sol}": "prettier --write"
+    "contracts/*.{js,css,md,sol}": "prettier --write"
   },
   "scripts": {
     "prepare": "husky install"
