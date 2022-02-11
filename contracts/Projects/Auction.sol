@@ -7,16 +7,10 @@ contract Auction {
     uint256 public startBlock;
     uint256 public endBlock;
 
-
-
-
-
     string public ipfsHash;
     bool public ownerTakenFunds;
 
     enum State {
-
-
         Started,
         Running,
         Ended,
@@ -35,17 +29,12 @@ contract Auction {
         address _owner,
         uint256 _endBlock,
         string memory _ipfsHash,
-
-
-
         uint256 _bidIncrement
     ) {
         owner = payable(_owner);
         auctionState = State.Running;
         startBlock = block.number;
 
-
-        
         endBlock = startBlock + _endBlock;
         ipfsHash = _ipfsHash;
         bidIncrement = _bidIncrement;
@@ -53,6 +42,7 @@ contract Auction {
 
     modifier notOwner() {
         require(msg.sender != owner);
+
         _;
     }
 
