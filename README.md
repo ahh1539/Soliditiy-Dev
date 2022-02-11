@@ -2,6 +2,8 @@
 
 Deploy using Remix or Hardhat
 
+## Resources
+
 Remix: https://remix.ethereum.org/
 
 ERC20 Docs: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
