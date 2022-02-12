@@ -1,4 +1,3 @@
-// import "./App.css";
 import "./tailwind.css";
 import barbsAbi from "./BarbsCoinABI.json";
 import { ethers, Contract, BigNumber } from "ethers";
