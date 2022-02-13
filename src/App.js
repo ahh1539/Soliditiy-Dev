@@ -104,39 +104,41 @@ function App() {
 
   return (
     <div className="flex h-screen justify-center bg-blue-100">
-      {connected && queryData !== [] ? (
-        <div className="m-10">
-          {loading ? (
-            <div>loading</div>
+      <div className="m-10">
+        <div className="bg-white p-10 rounded-lg shadow-lg">
+          {connected && queryData !== [] ? (
+            <div>
+              {loading ? (
+                <div>loading</div>
+              ) : (
+                <div>
+                  <h2 className="text-2xl font-bold mb-2 text-gray-800">Wallet Info</h2>
+                  <p className="text-lg my-1 text-gray-700">Block Number: {queryData.blockHeight}</p>
+                  <p className="text-lg my-1 text-gray-700">ETH balance: {queryData.formattedBalance}</p>
+                  <p className="text-lg my-1 text-gray-700">BARBS balance: {queryData.formattedBarbsBalance}</p>
+                  <p className="text-lg my-1 text-gray-700">Current Network: {queryData.networkName}</p>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={sendBarbs}
+                  >
+                    Send Barbs
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
-            <div className="m-10">
-              <div className="bg-white p-10 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-bold mb-2 text-gray-800">Wallet Info</h2>
-                <p className="text-lg my-1 text-gray-700">Block Number: {queryData.blockHeight}</p>
-                <p className="text-lg my-1 text-gray-700">ETH balance: {queryData.formattedBalance}</p>
-                <p className="text-lg my-1 text-gray-700">BARBS balance: {queryData.formattedBarbsBalance}</p>
-                <p className="text-lg my-1 text-gray-700">Current Network: {queryData.networkName}</p>
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={sendBarbs}
-                >
-                  Send Barbs
-                </button>
-              </div>
+            <div className="grid place-items-center">
+              <h2 className="text-2xl font-bold m-4 text-gray-800">Please connect your wallet</h2>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={connectWallet}
+              >
+                Connect Metamask
+              </button>
             </div>
           )}
         </div>
-      ) : (
-        <div className="m-10">
-          <p>please connect your wallet</p>
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={connectWallet}
-          >
-            Connect Metamask
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
