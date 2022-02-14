@@ -1,6 +1,6 @@
 import "./tailwind.css";
 import barbsAbi from "./BarbsCoinABI.json";
-import { ethers, Contract, BigNumber } from "ethers";
+import { ethers, Contract } from "ethers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -11,7 +11,6 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [queryData, setQueryData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
   const {
     register,
     handleSubmit,
@@ -114,7 +113,7 @@ function App() {
     if (connected) {
       query(walletAddress);
     }
-  }, [walletAddress, queryData, connected, loading]);
+  }, [walletAddress, queryData, connected, loading, isMetaMaskConnected]);
 
   return (
     <div className="h-screen bg-blue-100">
@@ -196,7 +195,7 @@ function App() {
                     <p className="text-lg my-1 text-gray-700">Current Network: {queryData.networkName}</p>
                     <form onSubmit={handleSubmit(onSubmit)} className="my-3">
                       <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Send Address</label>
+                        <label className="block text-gray-700 text-sm font-bold mb-2">ETH Send Address</label>
                         <input
                           {...register("toAddress", { required: true, pattern: /^0x[a-fA-F0-9]{40}$/ })}
                           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
