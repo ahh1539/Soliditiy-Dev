@@ -196,7 +196,7 @@ function App() {
                     <p className="text-lg my-1 text-gray-700">Current Network: {queryData.networkName}</p>
                     <form onSubmit={handleSubmit(onSubmit)} className="my-3">
                       <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Send Address</label>
+                        <label className="block text-gray-700 text-sm font-bold mb-2">ETH Send Address</label>
                         <input
                           {...register("toAddress", { required: true, pattern: /^0x[a-fA-F0-9]{40}$/ })}
                           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
