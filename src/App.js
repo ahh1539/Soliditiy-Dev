@@ -1,6 +1,6 @@
 import "./tailwind.css";
 import barbsAbi from "./BarbsCoinABI.json";
-import { ethers, Contract, BigNumber } from "ethers";
+import { ethers, Contract } from "ethers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -11,7 +11,6 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [queryData, setQueryData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
   const {
     register,
     handleSubmit,
@@ -114,7 +113,7 @@ function App() {
     if (connected) {
       query(walletAddress);
     }
-  }, [walletAddress, queryData, connected, loading]);
+  }, [walletAddress, queryData, connected, loading, isMetaMaskConnected]);
 
   return (
     <div className="h-screen bg-blue-100">
