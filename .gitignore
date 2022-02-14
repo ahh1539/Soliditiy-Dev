@@ -3,3 +3,4 @@ artifacts
 cache
 secrets.js
 tailwind.output.css
+build
