@@ -5,7 +5,7 @@ import { ethers, Contract } from "ethers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const exampleContractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const exampleContractAddress = "0xed1cFb090954a2fBBcC72cf92a2CA37A115B1381";
 
 function TokenPage() {
   const [walletAddress, setWalletAddress] = useState([]);
@@ -115,7 +115,7 @@ function TokenPage() {
     }
     setInterval(() => {
       isMetaMaskConnected();
-    }, 3000);
+    }, 10000);
   }, [walletAddress, queryData, connected, loading]);
 
   return (

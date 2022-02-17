@@ -36,7 +36,7 @@ function NavBar() {
     isMetaMaskConnected();
     setInterval(() => {
       isMetaMaskConnected();
-    }, 5000);
+    }, 10000);
   }, [walletAddress, connected]);
 
   return (
