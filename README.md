@@ -14,6 +14,12 @@ Mumbai (Polygon testnet) Explorer: https://mumbai.polygonscan.com/
 
 <br/>
 
+## Build and deploy
+
+Build: `yarn build`
+
+Deploy: `firebase deploy`
+
 ## Hardhat commands
 
 run hardhat network locally: `npx hardhat node`
