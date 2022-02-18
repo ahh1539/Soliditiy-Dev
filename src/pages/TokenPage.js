@@ -5,9 +5,7 @@ import { ethers, Contract } from "ethers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const exampleContractAddress = "0xed1cFb090954a2fBBcC72cf92a2CA37A115B1381";
-
-function TokenPage() {
+function TokenPage({ tokenAddress }) {
   const [walletAddress, setWalletAddress] = useState([]);
   const [connected, setConnected] = useState(false);
   const [queryData, setQueryData] = useState([]);
@@ -52,10 +50,9 @@ function TokenPage() {
       const formattedBalance = ethers.utils.formatUnits(balance, 18).toString();
 
       const signer = provider.getSigner();
-      const contract = new Contract(exampleContractAddress, kawsAbi.abi, signer);
-      const barbsBalance = await contract.balanceOf(address);
+      const contract = new Contract(tokenAddress, kawsAbi.abi, signer);
       const coinName = await contract.symbol();
-      const formattedBarbsBalance = ethers.utils.formatUnits(barbsBalance, 18).toString();
+      const formattedTokenBalance = ethers.utils.formatUnits(await contract.balanceOf(address), 18).toString();
 
       const data = {
         networkName,
@@ -64,7 +61,7 @@ function TokenPage() {
         gasPriceAsGwei,
         blockInfo,
         formattedBalance,
-        formattedBarbsBalance,
+        formattedTokenBalance,
         coinName,
       };
       setQueryData(data);
@@ -86,15 +83,15 @@ function TokenPage() {
     setConnected(false);
   };
 
-  const sendBarbs = async (toAddress, amount) => {
+  const sendTokens = async (toAddress, amount) => {
     const unformattedAmount = ethers.utils.parseEther(amount);
     amount = unformattedAmount.toString();
     const signer = provider.getSigner();
-    const contract = new Contract(exampleContractAddress, barbsAbi.abi, signer);
+    const contract = new Contract(tokenAddress, barbsAbi.abi, signer);
 
     contract.transfer(toAddress, amount).then(
       (transferResult) => {
-        alert("BARBS sent! transaction: " + transferResult.hash);
+        alert("Token sent! transaction: " + transferResult.hash);
         console.log(transferResult);
         reset();
       },
@@ -105,7 +102,7 @@ function TokenPage() {
   };
 
   const onSubmit = async (data) => {
-    sendBarbs(data.toAddress, data.amount);
+    sendTokens(data.toAddress, data.amount);
   };
 
   useEffect(() => {
@@ -135,7 +132,7 @@ function TokenPage() {
                     <p className="text-lg my-1 text-gray-700">Block Number: {queryData.blockHeight}</p>
                     <p className="text-lg my-1 text-gray-700">ETH balance: {queryData.formattedBalance}</p>
                     <p className="text-lg my-1 text-gray-700">
-                      {queryData.coinName} balance: {queryData.formattedBarbsBalance}
+                      {queryData.coinName} balance: {queryData.formattedTokenBalance}
                     </p>
                     <p className="text-lg my-1 text-gray-700">Current Network: {queryData.networkName}</p>
                     <form onSubmit={handleSubmit(onSubmit)} className="my-3">

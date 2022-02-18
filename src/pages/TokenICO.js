@@ -4,9 +4,7 @@ import { ethers, Contract, BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const exampleContractAddress = "0xed1cFb090954a2fBBcC72cf92a2CA37A115B1381";
-
-function TokenICO() {
+function TokenICO({ tokenAddress }) {
   const [walletAddress, setWalletAddress] = useState([]);
   const [connected, setConnected] = useState(false);
   const [queryData, setQueryData] = useState([]);
@@ -53,11 +51,27 @@ function TokenICO() {
       const ethBalance = ethers.utils.formatUnits(await provider.getBalance(address), 18).toString();
 
       const signer = provider.getSigner();
-      const contract = new Contract(exampleContractAddress, kawsAbi.abi, signer);
+      const contract = new Contract(tokenAddress, kawsAbi.abi, signer);
       const contractFounder = await contract.founder();
       const coinName = await contract.symbol();
       const ownerBarbsBalance = ethers.utils.formatUnits(await contract.balanceOf(contractFounder), 18).toString();
       const tokenPerEth = ethers.utils.formatUnits(await contract.barbEthMultiplier(), 0).toString();
+
+      var currentTimeStamp = (await provider.getBlock()).timestamp;
+      var endDate = parseInt(await (await contract.timeEnd()).toString());
+
+      var seconds = Number(endDate - currentTimeStamp);
+      var d = Math.floor(seconds / (3600 * 24));
+      var h = Math.floor((seconds % (3600 * 24)) / 3600);
+      var m = Math.floor((seconds % 3600) / 60);
+      var s = Math.floor(seconds % 60);
+
+      var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
+      var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+      var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+      var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+
+      const timeLeft = dDisplay + hDisplay + mDisplay + sDisplay;
 
       const data = {
         networkName,
@@ -66,6 +80,7 @@ function TokenICO() {
         coinName,
         contractFounder,
         tokenPerEth,
+        timeLeft,
       };
       setQueryData(data);
       setLoading(false);
@@ -80,7 +95,7 @@ function TokenICO() {
     console.log(amount);
     const unformattedAmount = ethers.utils.parseEther(amount);
     const signer = provider.getSigner();
-    const contract = new Contract(exampleContractAddress, kawsAbi.abi, signer);
+    const contract = new Contract(tokenAddress, kawsAbi.abi, signer);
     let overrides = {
       // The amount to send with the transaction (i.e. msg.value)
       value: unformattedAmount,
@@ -102,6 +117,10 @@ function TokenICO() {
   };
 
   useEffect(() => {
+    var date = new Date(0);
+    date.setSeconds(45000); // specify value for SECONDS here
+    var timeString = date.toISOString().substr(11, 8);
+    console.log(timeString);
     isMetaMaskConnected();
     if (connected) {
       query(walletAddress);
@@ -125,6 +144,7 @@ function TokenICO() {
                 ) : (
                   <div>
                     <h2 className="text-2xl font-bold mb-2 text-gray-800">Purchase {queryData.coinName}</h2>
+                    <p className="text-lg my-1 text-gray-700">Time Remaining: {queryData.timeLeft}</p>
                     <p className="text-lg my-1 text-gray-700">ETH balance: {queryData.ethBalance}</p>
                     <p className="text-lg my-1 text-gray-700">
                       {queryData.coinName} remaining: {queryData.ownerBarbsBalance}
