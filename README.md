@@ -31,3 +31,5 @@ compiling the contracts: `npx hardhat compile`
 deploying on local hardhat network: `npx hardhat run scripts/deployBarbsCoin.js --network localhost`
 
 deploying on rinkeby network: `npx hardhat run scripts/deployBarbsCoin.js --network rinkeby`
+
+https://barbs-coin.web.app/
