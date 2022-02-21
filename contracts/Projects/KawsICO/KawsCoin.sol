@@ -51,16 +51,19 @@ contract Kaws is IERC20 {
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 value) public virtual override returns (bool) {
-        require(allowed[from][msg.sender] <= value);
-        require(balances[from] >= value);
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) public virtual override returns (bool) {
+        require(allowed[from][msg.sender] >= value, "Requesting account does not have sufficient balance");
+        require(balances[from] >= value, "The originating account does not have sufficient balance");
 
         balances[from] = balances[from].sub(value);
         balances[to] = balances[to].add(value);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(value);
         emit Transfer(from, to, value);
-        
+
         return true;
     }
-
 }

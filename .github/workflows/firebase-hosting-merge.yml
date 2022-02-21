@@ -4,6 +4,11 @@
 name: Deploy to Firebase Hosting on merge
 "on":
   push:
+    paths:
+      - "src/**"
+      - "public/**"
+      - "firebase.json"
+      - ".firebaserc"
     branches:
       - main
 jobs:

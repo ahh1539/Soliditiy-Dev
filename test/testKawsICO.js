@@ -36,6 +36,21 @@ describe("Kaws ICO contract", function () {
       await expect(kawsICO.transfer(addr1.address, "500000000000000000000")).to.be.revertedWith("Tokens are locked"); // 500 KAWS
     });
 
+    it("transferFrom works if lockup is passed", async function () {
+      const unlockTime = 3024000; // unlock time from contract
+      await ethers.provider.send("evm_increaseTime", [unlockTime]);
+      await ethers.provider.send("evm_mine");
+
+      // owner account approves add1 to spend 500 KAWS
+      await kawsICO.approve(addr1.address, "500000000000000000000"); // 500 KAWS
+      // addr sends 100 KAWS from owner to addr2
+      await kawsICO.connect(addr1).transferFrom(owner.address, addr2.address, "100000000000000000000"); //100 KAWS
+      expect(await kawsICO.balanceOf(addr2.address)).to.equal("100000000000000000000"); // 100 KAWS
+      expect(await kawsICO.balanceOf(addr1.address)).to.equal("0");
+      expect(await kawsICO.allowance(owner.address, addr1.address)).to.equal("400000000000000000000"); // 400 KAWS
+      expect(await kawsICO.balanceOf(owner.address)).to.equal("299900000000000000000000"); // 299,500 KAWS
+    });
+
     it("transferFrom fails if lockup is still active", async function () {
       // owner apporves addr1 to spend 500 BARBS from their account
       kawsICO.approve(addr1.address, "500000000000000000000"); // 500 KAWS
