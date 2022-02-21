@@ -102,7 +102,7 @@ function TokenICO({ tokenAddress }) {
     };
     contract.invest(overrides).then(
       (transferResult) => {
-        alert("Purchase sent!: " + transferResult.hash);
+        alert("Purchase request sent!: " + transferResult.hash);
         reset();
       },
       (onRejected) => {
@@ -117,10 +117,6 @@ function TokenICO({ tokenAddress }) {
   };
 
   useEffect(() => {
-    var date = new Date(0);
-    date.setSeconds(45000); // specify value for SECONDS here
-    var timeString = date.toISOString().substr(11, 8);
-    console.log(timeString);
     isMetaMaskConnected();
     if (connected) {
       query(walletAddress);
