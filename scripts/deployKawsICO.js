@@ -3,7 +3,7 @@ async function main() {
 
   console.log("Deploying contracts with the account:", deployer.address);
 
-  console.log("Account balance:", (await deployer.getBalance()).toString());
+  console.log("Account ETH balance:", (await deployer.getBalance()).toString());
 
   const Kaws = await ethers.getContractFactory("KawsICO");
   const KawsICO = await Kaws.deploy("0xa2F0bFDCE970af39F7c1B3Ab7639EF239728F213");
