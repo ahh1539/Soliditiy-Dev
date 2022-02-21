@@ -59,7 +59,7 @@ contract Barbs is IERC20 {
         address to,
         uint256 value
     ) public override returns (bool) {
-        require(allowed[from][msg.sender] <= value, "Requesting account asking for more than allowed");
+        require(allowed[from][msg.sender] >= value, "Requesting account asking for more than allowed");
         require(balances[from] >= value, "Sending account has insufficient balance");
 
         balances[from] = balances[from].sub(value);
