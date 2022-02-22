@@ -1,3 +1,11 @@
+![GitHub contributors](https://img.shields.io/github/contributors/ahh1539/Soliditiy-Dev)
+![Forks](https://img.shields.io/github/forks/ahh1539/Soliditiy-Dev)
+![Stars](https://img.shields.io/github/stars/ahh1539/Soliditiy-Dev)
+![Last Commit](https://img.shields.io/github/last-commit/ahh1539/Soliditiy-Dev)
+![Repo Size](https://img.shields.io/github/repo-size/ahh1539/Soliditiy-Dev)
+![Latest Release](https://img.shields.io/github/v/release/ahh1539/Soliditiy-Dev?include_prereleases)
+![Website Status](https://img.shields.io/website?down_color=red&down_message=Offline&up_color=green&up_message=Online&url=https%3A%2F%2Fbarbs-coin.web.app%2F)
+
 # Soliditiy-Dev
 
 Deploy using Remix or Hardhat
@@ -11,8 +19,6 @@ ERC20 Docs: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 Rinkeby (ETH testnet) Explorer: https://rinkeby.etherscan.io/
 
 Mumbai (Polygon testnet) Explorer: https://mumbai.polygonscan.com/
-
-<br/>
 
 ## Build and deploy
 
@@ -31,5 +37,3 @@ compiling the contracts: `npx hardhat compile`
 deploying on local hardhat network: `npx hardhat run scripts/deployBarbsCoin.js --network localhost`
 
 deploying on rinkeby network: `npx hardhat run scripts/deployBarbsCoin.js --network rinkeby`
-
-https://barbs-coin.web.app/
