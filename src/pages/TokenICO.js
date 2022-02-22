@@ -22,13 +22,20 @@ function TokenICO({ tokenAddress }) {
     // Check if MetaMask is installed on user's browser
     if (window.ethereum) {
       const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-      console.log(accounts);
       let wallet = accounts[0];
       setWalletAddress(wallet);
       setConnected(true);
     } else {
       alert("Please install Mask");
     }
+  };
+
+  const ProgressBar = ({ progressPercentage }) => {
+    return (
+      <div className="h-2 w-full bg-gray-300">
+        <div style={{ width: `${progressPercentage}%` }} className={"h-full bg-green-600"}></div>
+      </div>
+    );
   };
 
   const isMetaMaskConnected = async () => {
@@ -56,6 +63,8 @@ function TokenICO({ tokenAddress }) {
       const coinName = await contract.symbol();
       const ownerBarbsBalance = ethers.utils.formatUnits(await contract.balanceOf(contractFounder), 18).toString();
       const tokenPerEth = ethers.utils.formatUnits(await contract.barbEthMultiplier(), 0).toString();
+      const goalAmount = ethers.utils.formatEther(await contract.hardCap());
+      const raisedAmount = ethers.utils.formatEther(await contract.raisedAmount());
 
       var currentTimeStamp = (await provider.getBlock()).timestamp;
       var endDate = parseInt(await (await contract.timeEnd()).toString());
@@ -81,6 +90,8 @@ function TokenICO({ tokenAddress }) {
         contractFounder,
         tokenPerEth,
         timeLeft,
+        raisedAmount,
+        goalAmount,
       };
       setQueryData(data);
       setLoading(false);
@@ -92,7 +103,6 @@ function TokenICO({ tokenAddress }) {
   };
 
   const buyToken = async (amount) => {
-    console.log(amount);
     const unformattedAmount = ethers.utils.parseEther(amount);
     const signer = provider.getSigner();
     const contract = new Contract(tokenAddress, kawsAbi.abi, signer);
@@ -112,7 +122,6 @@ function TokenICO({ tokenAddress }) {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     buyToken(data.amount);
   };
 
@@ -140,6 +149,15 @@ function TokenICO({ tokenAddress }) {
                 ) : (
                   <div>
                     <h2 className="text-2xl font-bold mb-2 text-gray-800">Purchase {queryData.coinName}</h2>
+                    <div className="my-3">
+                      <p className="mb-1">
+                        {((queryData.raisedAmount / queryData.goalAmount) * 100).toFixed(2)}% to {queryData.goalAmount}{" "}
+                        ETH goal
+                      </p>
+                      <ProgressBar
+                        progressPercentage={(queryData.raisedAmount / queryData.goalAmount) * 100}
+                      ></ProgressBar>
+                    </div>
                     <p className="text-lg my-1 text-gray-700">Time Remaining: {queryData.timeLeft}</p>
                     <p className="text-lg my-1 text-gray-700">ETH balance: {queryData.ethBalance}</p>
                     <p className="text-lg my-1 text-gray-700">
