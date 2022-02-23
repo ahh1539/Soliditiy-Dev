@@ -53,7 +53,7 @@ describe("Kaws ICO contract", function () {
       expect(await kawsICO.balanceOf(addr2.address)).to.equal("100000000000000000000"); // 100 KAWS
       expect(await kawsICO.balanceOf(addr1.address)).to.equal("0");
       expect(await kawsICO.allowance(owner.address, addr1.address)).to.equal("400000000000000000000"); // 400 KAWS
-      expect(await kawsICO.balanceOf(owner.address)).to.equal("299900000000000000000000"); // 299,500 KAWS
+      expect(await kawsICO.balanceOf(owner.address)).to.equal("299900000000000000000000"); // 295,000 KAWS
     });
 
     it("transferFrom fails if lockup is still active", async function () {
@@ -118,7 +118,32 @@ describe("Kaws ICO contract", function () {
 
       // investment goes through successfully
       await kawsICO.connect(addr1).invest(overrides);
-      expect(await kawsICO.balanceOf(addr1.address)).to.equal("5000000000000000000000");
+      expect(await kawsICO.balanceOf(addr1.address)).to.equal("10000000000000000000000"); // 10,000 KAWS
+    });
+
+    it("Purchase all KAWS", async function () {
+      let amount = (await kawsICO.maxInvestment()).toString();
+
+      for (let i = 0; i < 30; i++) {
+        await kawsICO.connect(addr1).invest({ value: amount }); // buy 5 eth of KAWS
+      }
+      await expect(kawsICO.connect(addr1).invest({ value: "100000000000000000" })).to.be.revertedWith(
+        "Hardcap has been reached"
+      ); // buy .1 eth of kaws
+    });
+  });
+
+  describe("Token burn", function () {
+    it("Burns all owners tokens at ICO completion", async function () {
+      await kawsICO.connect(addr1).invest({ value: "5000000000000000000" }); // buy 5000 KAWS
+      const unlockTime = 604800; // unlock time from contract
+      await ethers.provider.send("evm_increaseTime", [unlockTime]);
+      await ethers.provider.send("evm_mine");
+
+      expect(await kawsICO.balanceOf(owner.address)).to.equal("295000000000000000000000"); // 299,500 KAWS
+      await kawsICO.burn();
+      expect(await kawsICO.balanceOf(owner.address)).to.equal("0"); // 299,500 KAWS
+      expect(await kawsICO.totalSupply()).to.equal("5000000000000000000000");
     });
   });
 });

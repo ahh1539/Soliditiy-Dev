@@ -17,9 +17,9 @@ contract KawsICO is Kaws, Ownable {
 
     uint256 public timeStart = block.timestamp; // starts in one hour
     uint256 public timeEnd = timeStart.add(604800); // ends after a week
-    uint256 public unlockTokens = timeEnd.add(2419200); // tokens unlock 4 weeks after the sale end
+    uint256 public unlockTokens = timeEnd.add(604800); // tokens unlock 1 week after the sale end
 
-    uint256 public maxInvestment = 5 ether;
+    uint256 public maxInvestment = 10 ether;
     uint256 public minInvestment = .1 ether;
 
     enum State {
@@ -74,7 +74,7 @@ contract KawsICO is Kaws, Ownable {
         require(raisedAmount.add(msg.value) <= hardCap, "Hardcap has been reached");
 
         uint256 tokens = msg.value.mul(barbEthMultiplier);
-        require(balanceOf(founder) >= tokens, "Not enough BARBS in reserves");
+        require(balanceOf(founder) >= tokens, "Not enough tokens in reserves");
 
         _transfer(founder, msg.sender, tokens);
         deposit.transfer(msg.value);
@@ -91,7 +91,7 @@ contract KawsICO is Kaws, Ownable {
 
     function transfer(address to, uint256 value) public override returns (bool) {
         require(block.timestamp > unlockTokens, "Tokens are locked");
-        super.transfer(to, value); // Barbs.transfer(to, value)
+        super.transfer(to, value); // Kaws.transfer(to, value)
         return true;
     }
 
@@ -101,7 +101,7 @@ contract KawsICO is Kaws, Ownable {
         uint256 value
     ) public virtual override returns (bool) {
         require(block.timestamp > unlockTokens, "Tokens are locked");
-        super.transferFrom(from, to, value); // Barbs.transferFrom(from, to, value)
+        super.transferFrom(from, to, value); // Kaws.transferFrom(from, to, value)
         return true;
     }
 
