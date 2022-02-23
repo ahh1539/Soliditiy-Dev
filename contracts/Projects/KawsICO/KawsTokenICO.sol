@@ -3,10 +3,12 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "./KawsCoin.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract KawsICO is Kaws {
+contract KawsICO is Kaws, Ownable {
     using SafeMath for uint256;
 
+    address public founder;
     address payable public deposit;
     uint256 public barbEthMultiplier = 1000; // 1ETH = 1000 KAWS
 
@@ -38,22 +40,18 @@ contract KawsICO is Kaws {
     ) Kaws(name, symbol, initialSupply) {
         deposit = _deposit;
         icoState = State.beforeRunning;
+        founder = msg.sender;
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == founder);
-        _;
-    }
-
-    function halt() public onlyAdmin {
+    function halt() public onlyOwner {
         icoState = State.halted;
     }
 
-    function resume() public onlyAdmin {
+    function resume() public onlyOwner {
         icoState = State.running;
     }
 
-    function changeDepositAddress(address payable _deposit) public onlyAdmin {
+    function changeDepositAddress(address payable _deposit) public onlyOwner {
         deposit = _deposit;
     }
 
