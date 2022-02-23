@@ -2,14 +2,17 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract Kaws is IERC20 {
+// import "hardhat/console.sol";
+// console.log("Trying to send %s tokens to %s", value, to);
+
+contract Barbs is IERC20 {
     using SafeMath for uint256;
 
-    string public constant name = "Kaws Coin";
-    string public constant symbol = "KAWS";
+    string public constant name = "Barbs Coin";
+    string public constant symbol = "BARBS";
     uint256 public constant decimals = 18;
     uint256 public override totalSupply;
 
@@ -28,7 +31,7 @@ contract Kaws is IERC20 {
         return balances[who];
     }
 
-    function transfer(address to, uint256 value) public virtual override returns (bool) {
+    function transfer(address to, uint256 value) public override returns (bool) {
         require(balances[msg.sender] >= value, "Insufficient Balance");
 
         balances[to] = balances[to].add(value);
@@ -55,9 +58,9 @@ contract Kaws is IERC20 {
         address from,
         address to,
         uint256 value
-    ) public virtual override returns (bool) {
-        require(allowed[from][msg.sender] >= value, "Requesting account does not have sufficient balance");
-        require(balances[from] >= value, "The originating account does not have sufficient balance");
+    ) public override returns (bool) {
+        require(allowed[from][msg.sender] >= value, "Requesting account asking for more than allowed");
+        require(balances[from] >= value, "Sending account has insufficient balance");
 
         balances[from] = balances[from].sub(value);
         balances[to] = balances[to].add(value);

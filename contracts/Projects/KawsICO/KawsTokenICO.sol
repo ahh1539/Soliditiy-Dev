@@ -2,8 +2,6 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
-import "../../UtilityContracts/IERC20.sol";
-import "../../UtilityContracts/SafeMath.sol";
 import "./KawsCoin.sol";
 
 contract KawsICO is Kaws {

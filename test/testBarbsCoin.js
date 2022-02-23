@@ -7,17 +7,18 @@ describe("Barbs Coin contract", function () {
   let owner;
   let addr1;
   let addr2;
+  let addr3;
   let addrs;
 
   beforeEach(async function () {
     // Get the ContractFactory and Signers here.
     Barbs = await ethers.getContractFactory("Barbs");
-    [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
+    [owner, addr1, addr2, addr3, ...addrs] = await ethers.getSigners();
 
     // To deploy our contract, we just have to call Barbs.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
     // mined.
-    barbsCoin = await Barbs.deploy();
+    barbsCoin = await Barbs.deploy("Barbs Coin", "BARBS", "300000000000000000000000");
   });
 
   describe("Deployment", function () {
@@ -44,9 +45,9 @@ describe("Barbs Coin contract", function () {
     });
 
     it("Transfer fails if sender has no tokens", async function () {
-      // addr1 trys to send 1 BARBS but has no balance
-      await expect(barbsCoin.connect(addr1).transfer(owner.address, "1000000000000000000")).to.be.revertedWith(
-        "Insufficient Balance"
+      // addr3 trys to send 1 BARBS but has no balance
+      await expect(barbsCoin.connect(addr3).transfer(owner.address, "100000000000000000")).to.be.revertedWith(
+        "ERC20: transfer amount exceeds balance"
       );
 
       const ownerBalance = await barbsCoin.balanceOf(owner.address);
