@@ -34,6 +34,20 @@ run hardhat tests: `npx hardhat test`
 
 compiling the contracts: `npx hardhat compile`
 
+## Deploying contracts
+
+```
+// BARBS Coin
+
 deploying on local hardhat network: `npx hardhat run scripts/deployBarbsCoin.js --network localhost`
 
 deploying on rinkeby network: `npx hardhat run scripts/deployBarbsCoin.js --network rinkeby`
+```
+
+```
+// KAWS Coin
+
+deploying on local hardhat network: `npx hardhat run scripts/deployKawsICO.js --network localhost`
+
+deploying on rinkeby network: `npx hardhat run scripts/deployKawsICO.js --network rinkeby`
+```

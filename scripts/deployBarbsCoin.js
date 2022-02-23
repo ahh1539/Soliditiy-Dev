@@ -6,7 +6,7 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   const Barbs = await ethers.getContractFactory("Barbs");
-  const barbsCoin = await Barbs.deploy();
+  const barbsCoin = await Barbs.deploy("Barbs Coin", "BARBS", "300000000000000000000000");
 
   console.log("BARBS address:", barbsCoin.address);
 }

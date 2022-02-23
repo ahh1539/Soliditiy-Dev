@@ -17,7 +17,12 @@ describe("Kaws ICO contract", function () {
     // To deploy our contract, we just have to call Kaws.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
     // mined.
-    kawsICO = await Kaws.deploy("0xa2F0bFDCE970af39F7c1B3Ab7639EF239728F213");
+    kawsICO = await Kaws.deploy(
+      "Kaws Coin",
+      "KAWS",
+      "300000000000000000000000",
+      "0xa2F0bFDCE970af39F7c1B3Ab7639EF239728F213"
+    );
   });
 
   describe("Deployment", function () {

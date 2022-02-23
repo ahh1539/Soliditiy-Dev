@@ -6,7 +6,12 @@ async function main() {
   console.log("Account ETH balance:", (await deployer.getBalance()).toString());
 
   const Kaws = await ethers.getContractFactory("KawsICO");
-  const KawsICO = await Kaws.deploy("0xa2F0bFDCE970af39F7c1B3Ab7639EF239728F213");
+  const KawsICO = await Kaws.deploy(
+    "Kaws Coin",
+    "KAWS",
+    "300000000000000000000000",
+    "0xa2F0bFDCE970af39F7c1B3Ab7639EF239728F213"
+  );
 
   console.log("ICO address:", KawsICO.address);
 }

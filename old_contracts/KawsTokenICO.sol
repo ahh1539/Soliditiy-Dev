@@ -30,12 +30,7 @@ contract KawsICO is Kaws {
 
     event Invest(address _investor, uint256 value, uint256 tokens);
 
-    constructor(
-        string memory name,
-        string memory symbol,
-        uint256 initialSupply,
-        address payable _deposit
-    ) Kaws(name, symbol, initialSupply) {
+    constructor(address payable _deposit) {
         deposit = _deposit;
         icoState = State.beforeRunning;
     }
@@ -76,9 +71,10 @@ contract KawsICO is Kaws {
         require(raisedAmount.add(msg.value) <= hardCap, "Hardcap has been reached");
 
         uint256 tokens = msg.value.mul(barbEthMultiplier);
-        require(balanceOf(founder) >= tokens, "Not enough BARBS in reserves");
+        require(balances[founder] >= tokens, "Not enough BARBS in reserves");
 
-        _transfer(founder, msg.sender, tokens);
+        balances[msg.sender] = balances[msg.sender].add(tokens);
+        balances[founder] = balances[founder].sub(tokens);
         deposit.transfer(msg.value);
         raisedAmount = raisedAmount.add(msg.value);
 
@@ -110,7 +106,7 @@ contract KawsICO is Kaws {
     function burn() public returns (bool) {
         icoState = getCurrentState();
         require(icoState == State.afterEnd, "ICO not complete");
-        _burn(founder, balanceOf(founder));
+        balances[founder] = 0;
         return true;
     }
 }
