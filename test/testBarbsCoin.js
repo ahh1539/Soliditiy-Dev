@@ -54,5 +54,22 @@ describe("Barbs Coin contract", function () {
 
       expect(ownerBalance).to.equal(await barbsCoin.totalSupply());
     });
+
+    it("transferFrom working properly", async function () {
+      // addr1 tries to send 100 tokens from owner to addr2 without approval
+      await expect(
+        barbsCoin.connect(addr1).transferFrom(owner.address, addr2.address, "100000000000000000000")
+      ).to.be.revertedWith("ERC20: insufficient allowance");
+
+      // owner account approves add1 to spend 500 Tokens
+      await barbsCoin.approve(addr1.address, "500000000000000000000"); // 500 Tokens
+
+      // addr sends 100 Tokens from owner to addr2
+      await barbsCoin.connect(addr1).transferFrom(owner.address, addr2.address, "100000000000000000000"); //100 Tokens
+      expect(await barbsCoin.balanceOf(addr2.address)).to.equal("100000000000000000000"); // 100 Tokens
+      expect(await barbsCoin.balanceOf(addr1.address)).to.equal("0");
+      expect(await barbsCoin.allowance(owner.address, addr1.address)).to.equal("400000000000000000000"); // 400 Tokens
+      expect(await barbsCoin.balanceOf(owner.address)).to.equal("299900000000000000000000"); // 299,500 Tokens
+    });
   });
 });
