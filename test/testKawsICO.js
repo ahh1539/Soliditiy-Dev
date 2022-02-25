@@ -125,7 +125,7 @@ describe("Kaws ICO contract", function () {
       let amount = (await kawsICO.maxInvestment()).toString();
 
       for (let i = 0; i < 30; i++) {
-        await kawsICO.connect(addr1).invest({ value: amount }); // buy 5 eth of KAWS
+        await kawsICO.connect(addr1).invest({ value: amount }); // buy 10 eth of KAWS
       }
       await expect(kawsICO.connect(addr1).invest({ value: "100000000000000000" })).to.be.revertedWith(
         "Hardcap has been reached"

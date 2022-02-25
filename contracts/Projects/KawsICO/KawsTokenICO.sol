@@ -31,6 +31,7 @@ contract KawsICO is Kaws, Ownable {
     State public icoState;
 
     event Invest(address _investor, uint256 value, uint256 tokens);
+    event ICOBurn(uint256 amount);
 
     constructor(
         string memory name,
@@ -105,10 +106,10 @@ contract KawsICO is Kaws, Ownable {
         return true;
     }
 
-    function burn() public returns (bool) {
+    function burn() public {
         icoState = getCurrentState();
         require(icoState == State.afterEnd, "ICO not complete");
+        emit ICOBurn(balanceOf(founder));
         _burn(founder, balanceOf(founder));
-        return true;
     }
 }
